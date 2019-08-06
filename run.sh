@@ -233,6 +233,8 @@ if [[ -z $INCREASE_BUILD_NUMBER ]]; then
                 echo "NEW build: $NEW_BUILD_NUMBER"
                 NEW_TAG=$SOURCE_BRANCH"+"$NEW_BUILD_NUMBER
                 OLD_TAG=$SOURCE_BRANCH"+"$LATEST_BUILD_NUMBER
+                export $OLD_TAG
+                export $NEW_TAG
                 #echo $OLD_TAG > $REPO_PATH_TAG/old_tag.txt
                 #echo $NEW_TAG > $REPO_PATH_TAG/new_tag.txt
         fi
@@ -243,6 +245,7 @@ if [[ -n $FORCE_BUILD_NUMBER ]]; then
         # force a build number
         echo "tag_commit_sha $REPO $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
         tag_commit_sha $REPO $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
+        export NEW_TAG=$FORCE_BUILD_NUMBER
         #echo  $FORCE_BUILD_NUMBER > $REPO_PATH_TAG/new_tag.txt
 else
         if [[ -n $NEW_TAG ]]; then
