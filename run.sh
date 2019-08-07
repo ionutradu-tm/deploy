@@ -31,6 +31,7 @@ function clone_pull_repo (){
                         echo "Repository $REPO created"
                 else
                         echo "Failed to create repository $REPO"
+                        rm -rf $REPO_PATH
                         return 3
                 fi
         fi
@@ -42,6 +43,7 @@ function clone_pull_repo (){
                 git pull 2>/dev/null
         else
                 echo "Branch $BRANCH does not exists"
+                rm -rf $REPO_PATH
                 return 3
         fi
         # prunes tracking branches not on the remote
