@@ -1,5 +1,5 @@
 name: deploy
-version: 0.0.8
+version: 0.0.10
 summary: Deploy
 tags:
   - branch name
@@ -27,5 +27,8 @@ properties:
     type: string
     required: false
   - name: BUILD_NUMBER
+    type: string
+    required: false
+  - name: FORCE_CLONE
     type: string
     required: false

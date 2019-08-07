@@ -9,6 +9,7 @@ SOURCE_BRANCH=$WERCKER_DEPLOY_SOURCE_BRANCH
 TO_BRANCH=$WERCKER_DEPLOY_TO_BRANCH
 FORCE_BUILD_NUMBER=$WERCKER_DEPLOY_FORCE_BUILD_NUMBER
 BUILD_NUMBER=$WERCKER_DEPLOY_BUILD_NUMBER
+FORCE_CLONE=$WERCKER_DEPLOY_FORCE_CLONE
 
 # clone or pull a repository
 # ARG1: repo name
@@ -222,6 +223,9 @@ git config --global user.email email@wercker.com
 git config --global user.name wercker
 #end set git
 
+if [[ ${FORCE_CLONE,,} == "yes" ]];then
+    rm -rf $REPO_PATH
+fi
 if [[ -n $DEPLOY_BUILD_NUMBER ]]; then
         echo "Deploy from build number"
 fi
