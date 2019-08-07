@@ -60,14 +60,12 @@ function clone_pull_repo (){
 # Switch to a specific branch
 # ARG1: repo name
 # ARG2: local PATH to store the repo
-# ARG3: repo username
-# ARG4: branch name
+# ARG3: branch name
 #
 function switch_branch(){
         local REPO=$1
         local REPO_PATH=$2
-        local USER=$3
-        local BRANCH=$4
+        local BRANCH=$3
 
         #check if REPO_PATH exists
         if [ -d "$REPO_PATH" ]; then
@@ -104,7 +102,7 @@ function get_build_number_commit_prefix_tag(){
 
         echo "Tag Prefix: $TAG_PREFIX"
 
-        switch_branch $REPO $REPO_PATH $USER $FROM_BRANCH
+        switch_branch $REPO $REPO_PATH $FROM_BRANCH
         LATEST_BUILD_NUMBER=$(git tag -l $TAG_PREFIX\+* | cut -d\+ -f2| sort -rn|  head -n 1)
         if [[ -z $LATEST_BUILD_NUMBER ]];then
                 LATEST_TAG=""
@@ -157,7 +155,7 @@ function clone_branch(){
         local NEW_BRANCH=$4
 
         # switch to the soruce branch and update it
-        switch_branch $REPO $REPO_PATH $USER $FROM_BRANCH
+        switch_branch $REPO $REPO_PATH $FROM_BRANCH
         git checkout -b $NEW_BRANCH $FROM_BRANCH
         if [ $? -eq 0 ]; then
                 echo "Succesfully created branch $NEW_BRANCH"
@@ -214,7 +212,8 @@ function delete_branch(){
         local BRANCH=$3
 
         git branch -D $BRANCH
-}
+
+}+
 #end functions
 #############################################################3
 
@@ -237,8 +236,11 @@ echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
 clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
 if [ $? -eq 0 ]; then
         #destination branch exists
+        echo "compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
         compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
-        switch_branch $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
+        echo "switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH"
+        switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH
+        echo "delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH"
         delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
 fi
 echo "clone_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
