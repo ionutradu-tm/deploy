@@ -203,6 +203,18 @@ function tag_commit_sha(){
 
 }
 
+# Delete a branch (local)
+# ARG1: repo name
+# ARG2: local PATH to store the repo
+# ARG3: branch
+#
+function delete_branch(){
+        local REPO=$1
+        local REPO_PATH=$2
+        local BRANCH=$3
+
+        git branch -D $BRANCH
+}
 #end functions
 #############################################################3
 
