@@ -4,7 +4,7 @@
 
 REPO_USER=$WERCKER_DEPLOY_REPO_USER
 REPO_NAME=$WERCKER_DEPLOY_REPO_NAME
-REPO_PATH=$$WERCKER_CACHE_DIR$REPO_NAME
+REPO_PATH=$WERCKER_CACHE_DIR$REPO_NAME
 SOURCE_BRANCH=$WERCKER_DEPLOY_SOURCE_BRANCH
 TO_BRANCH=$WERCKER_DEPLOY_TO_BRANCH
 FORCE_BUILD_NUMBER=$WERCKER_DEPLOY_FORCE_BUILD_NUMBER
@@ -206,25 +206,27 @@ function tag_commit_sha(){
 if [[ -n $DEPLOY_BUILD_NUMBER ]]; then
         echo "Deploy from build number"
 fi
-clone_pull_repo $REPO $REPO_PATH $REPO_USER $SOURCE_BRANCH
+echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH"
+clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
 if [ $? -ne 0 ]; then
         echo "Branch $SOURCE_BRANCH does not exists"
         exit 3
 fi
 # check if the destination branch exists"
-clone_pull_repo $REPO $REPO_PATH $REPO_USER $TO_BRANCH
+echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
+clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
 if [ $? -eq 0 ]; then
         #destination branch exists
-        compare_branches $REPO $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
-        switch_branch $REPO $REPO_PATH $REPO_USER $SOURCE_BRANCH
-        delete_branch $REPO $REPO_PATH $TO_BRANCH
+        compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
+        switch_branch $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
+        delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
 fi
-echo "clone_branch $REPO $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
-clone_branch $REPO $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
+echo "clone_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
+clone_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
 echo "$SOURCE_BRANCH cloned into $TO_BRANCH"
 # get the latest build number
-echo "get_build_number_commit_prefix_tag $REPO $REPO_PATH $REPO_USER $SOURCE_BRANCH"
-get_build_number_commit_prefix_tag $REPO $REPO_PATH $REPO_USER $SOURCE_BRANCH
+echo "get_build_number_commit_prefix_tag $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH"
+get_build_number_commit_prefix_tag $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
 # check if we need to increment the build number
 if [[ -z $INCREASE_BUILD_NUMBER ]]; then
         if [[ -n $LATEST_TAG ]]; then
@@ -243,13 +245,13 @@ fi
 # check if the build number is forced
 if [[ -n $FORCE_BUILD_NUMBER ]]; then
         # force a build number
-        echo "tag_commit_sha $REPO $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
-        tag_commit_sha $REPO $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
+        echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
+        tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
         export NEW_TAG=$FORCE_BUILD_NUMBER
         #echo  $FORCE_BUILD_NUMBER > $REPO_PATH_TAG/new_tag.txt
 else
         if [[ -n $NEW_TAG ]]; then
-                echo "tag_commit_sha $REPO $REPO_PATH $REPO_USER $NEW_TAG $COMMIT_WITH_LATEST_TAG"
-                tag_commit_sha $REPO $REPO_PATH $REPO_USER $NEW_TAG $LAST_COMMIT_SHA
+                echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $NEW_TAG $COMMIT_WITH_LATEST_TAG"
+                tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $NEW_TAG $LAST_COMMIT_SHA
         fi
 fi
