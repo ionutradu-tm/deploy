@@ -213,7 +213,7 @@ function delete_branch(){
 
         git branch -D $BRANCH
 
-}+
+}
 #end functions
 #############################################################3
 
