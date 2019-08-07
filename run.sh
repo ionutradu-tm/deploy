@@ -112,7 +112,7 @@ function get_build_number_commit_prefix_tag(){
                 LATEST_TAG=$TAG_PREFIX"+"$LATEST_BUILD_NUMBER
                 COMMIT_WITH_LATEST_TAG=$(git rev-list -1 $LATEST_TAG)
                 echo "commit with latest tag: $COMMIT_WITH_LATEST_TAG"
-                LAST_COMMIT_SHA=$(git log -n 1 |  head -n 1 |  cut -d\  -f2)
+                LAST_COMMIT_SHA=$(git rev-parse $FROM_BRANCH)
                 if [[ "$LAST_COMMIT_SHA" == "$COMMIT_WITH_LATEST_TAG" ]];then
                         echo "No need to increase the build number"
                         INCREASE_BUILD_NUMBER="FALSE"
@@ -133,7 +133,9 @@ function compare_branches(){
         local FROM_BRANCH=$3
         local TO_BRANCH=$4
 
-        if [[ $(git rev-parse $FROM_BRANCH) = $(git rev-parse $TO_BRANCH) ]]; then
+        LAST_SHA=$(git rev-parse $FROM_BRANCH)
+        git branch --contains $LAST_SHA | grep -w $TO_BRANCH
+        if [ $? -eq 0 ]; then
                 echo "$FROM_BRANCH and $TO_BRANCH are the same"
                 exit 3
         fi
