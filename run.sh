@@ -18,12 +18,18 @@ TAG_PATH=$WERCKER_SOURCE_DIR"/tag"
 # ARG2: local PATH to store the repo
 # ARG3: repo username
 # ARG4: branch name
+# ARG5: remove REPO_PATH
 function clone_pull_repo (){
         local REPO=$1
         local REPO_PATH=$2
         local USER=$3
         local BRANCH=$4
+        local DEL_REPO_PATH=$5
 
+
+        if [[ ${DEL_REPO_PATH,,} == "yes" ]];then
+                rm -rf $REPO_PATH
+        fi
         #check if REPO_PATH exists
         if [ ! -d "$REPO_PATH" ]; then
                 echo "Clone repository: $REPO"
@@ -172,7 +178,7 @@ function clone_branch(){
                 if [ $? -eq 0 ]; then
                         echo "Succesfully pushed branch $NEW_BRANCH"
                 else
-                        echo "Error during while pushing bracnh $NEW_BRANCH"
+                        echo "Error while pushing bracnh $NEW_BRANCH"
                         exit 2
                 fi
         else
@@ -234,9 +240,6 @@ git config --global user.name wercker
 
 mkdir -p $TAG_PATH
 
-if [[ ${FORCE_CLONE,,} == "yes" ]];then
-    rm -rf $REPO_PATH
-fi
 if [[ -n $DEPLOY_BUILD_TAG ]]; then
         echo "Deploy from build number"
         #clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER master
@@ -248,8 +251,8 @@ if [[ -n $DEPLOY_BUILD_TAG ]]; then
         #export $SOURCE_BRANCH=$DEPLOY_BUILD_TAG
         exit 0
 else
-    echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH"
-    clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
+    echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH $FORCE_CLONE"
+    clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH $FORCE_CLONE
     if [ $? -ne 0 ]; then
         echo "Branch $SOURCE_BRANCH not found"
         exit 3
