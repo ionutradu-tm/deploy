@@ -1,5 +1,5 @@
 name: deploy
-version: 0.0.14
+version: 0.0.13
 summary: Deploy
 tags:
   - branch name
@@ -32,6 +32,6 @@ properties:
   - name: FORCE_CLONE
     type: string
     required: false
-- name: TAG_PROD
+  - name: TAG_PROD
     type: string
     required: false
