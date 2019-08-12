@@ -205,7 +205,9 @@ function tag_commit_sha(){
                         COMMIT_SHA=$(git log -n 1 |  head -n 1 |  cut -d\  -f2)
                 fi
                 git tag $NEW_TAG $COMMIT_SHA
-                git push origin $tag
+                echo "git tag $NEW_TAG $COMMIT_SHA"
+                git push origin $NEW_TAG
+                echo "git push origin $NEW_TAG"
 
         else
                 echo "Please clone repository $REPO first"
