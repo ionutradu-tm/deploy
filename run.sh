@@ -56,7 +56,7 @@ function clone_pull_repo (){
                 return 3
         fi
         # prunes tracking branches not on the remote
-        git remote prune origin
+        git remote prune origin | awk 'BEGIN{FS="origin/"};/pruned/{print $3}' | xargs -r git branch -D
         if [ $? -eq 0 ]; then
                 echo "Repository $REPO pruned"
         else
@@ -294,6 +294,7 @@ fi
 # check if the build number is forced
 if [[ -n $FORCE_BUILD_NUMBER ]]; then
         # force a build tag
+        FORCE_BUILD_TAG=$SOURCE_BRANCH"+"$FORCE_BUILD_NUMBER
         echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
         tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
         export NEW_TAG=$FORCE_BUILD_NUMBER
