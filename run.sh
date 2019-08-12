@@ -235,6 +235,7 @@ function delete_branch(){
 #set git
 git config --global user.email email@wercker.com
 git config --global user.name wercker
+git config --global push.default simple
 #end set git
 
 mkdir -p $TAG_PATH
@@ -295,9 +296,9 @@ fi
 if [[ -n $FORCE_BUILD_NUMBER ]]; then
         # force a build tag
         FORCE_BUILD_TAG=$SOURCE_BRANCH"+"$FORCE_BUILD_NUMBER
-        echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
-        tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
-        export NEW_TAG=$FORCE_BUILD_NUMBER
+        echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_TAG"
+        tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_TAG
+        export NEW_TAG=$FORCE_BUILD_TAG
         #echo  $FORCE_BUILD_NUMBER > $REPO_PATH_TAG/new_tag.txt
 else
         if [[ -n $NEW_TAG ]]; then
