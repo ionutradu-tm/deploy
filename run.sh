@@ -8,8 +8,10 @@ REPO_PATH=$WERCKER_CACHE_DIR"/my_tmp/"$REPO_NAME
 SOURCE_BRANCH=$WERCKER_DEPLOY_SOURCE_BRANCH
 TO_BRANCH=$WERCKER_DEPLOY_TO_BRANCH
 FORCE_BUILD_NUMBER=$WERCKER_DEPLOY_FORCE_BUILD_NUMBER
-BUILD_NUMBER=$WERCKER_DEPLOY_BUILD_NUMBER
+BUILD_TAG=$WERCKER_DEPLOY_BUILD_TAG
 FORCE_CLONE=$WERCKER_DEPLOY_FORCE_CLONE
+TAG_PROD=$WERCKER_DEPLOY_TAG_PROD
+TAG_PATH=$WERCKER_SOURCE_DIR"/tag"
 
 # clone or pull a repository
 # ARG1: repo name
@@ -121,6 +123,7 @@ function get_build_number_commit_prefix_tag(){
 
 }
 
+
 # Compare two branches
 # ARG1: repo name
 # ARG2: local PATH to store the repo
@@ -158,7 +161,9 @@ function clone_branch(){
         local NEW_BRANCH=$4
 
         # switch to the soruce branch and update it
+        echo "switch_branch $REPO $REPO_PATH $FROM_BRANCH"
         switch_branch $REPO $REPO_PATH $FROM_BRANCH
+        echo "git checkout -b $NEW_BRANCH $FROM_BRANCH"
         git checkout -b $NEW_BRANCH $FROM_BRANCH
         if [ $? -eq 0 ]; then
                 echo "Succesfully created branch $NEW_BRANCH"
@@ -195,7 +200,7 @@ function tag_commit_sha(){
                         COMMIT_SHA=$(git log -n 1 |  head -n 1 |  cut -d\  -f2)
                 fi
                 git tag $NEW_TAG $COMMIT_SHA
-                #git push origin $tag
+                git push origin $tag
 
         else
                 echo "Please clone repository $REPO first"
@@ -203,6 +208,8 @@ function tag_commit_sha(){
         fi
 
 }
+
+
 
 # Delete a branch (local)
 # ARG1: repo name
@@ -225,18 +232,30 @@ git config --global user.email email@wercker.com
 git config --global user.name wercker
 #end set git
 
+mkdir -p $TAG_PATH
+
 if [[ ${FORCE_CLONE,,} == "yes" ]];then
     rm -rf $REPO_PATH
 fi
-if [[ -n $DEPLOY_BUILD_NUMBER ]]; then
+if [[ -n $DEPLOY_BUILD_TAG ]]; then
         echo "Deploy from build number"
-fi
-echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH"
-clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
-if [ $? -ne 0 ]; then
-        echo "Branch $SOURCE_BRANCH does not exists"
+        #clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER master
+        #TAG_FOUND=$(git tag -l $TAG |wc -l)
+        #if [[ $TAG_FOUND == "0" ]]; then
+        #    echo "TAG $DEPLOY_BUILD_TAG not found"
+        #    exit 3
+        #fi
+        #export $SOURCE_BRANCH=$DEPLOY_BUILD_TAG
+        exit 0
+else
+    echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH"
+    clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $SOURCE_BRANCH
+    if [ $? -ne 0 ]; then
+        echo "Branch $SOURCE_BRANCH not found"
         exit 3
+    fi
 fi
+
 # check if the destination branch exists"
 echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
 clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
@@ -272,7 +291,7 @@ fi
 
 # check if the build number is forced
 if [[ -n $FORCE_BUILD_NUMBER ]]; then
-        # force a build number
+        # force a build tag
         echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER"
         tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_NUMBER
         export NEW_TAG=$FORCE_BUILD_NUMBER
