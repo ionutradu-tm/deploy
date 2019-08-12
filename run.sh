@@ -53,7 +53,6 @@ function clone_pull_repo (){
                 git pull 2>/dev/null
         else
                 echo "Branch $BRANCH does not exists"
-                rm -rf $REPO_PATH
                 return 3
         fi
         # prunes tracking branches not on the remote
