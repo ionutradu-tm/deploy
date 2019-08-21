@@ -240,6 +240,27 @@ git config --global user.name wercker
 git config --global push.default simple
 #end set git
 
+#check vars
+
+if [[ -z $REPO_USER ]]; then
+    echo "Please provide repo username"
+    exit 1
+fi
+if [[ -z $REPO_NAME ]]; then
+    echo "Please provide repo name"
+    exit 1
+fi
+if [[ -z $SOURCE_BRANCH ]]; then
+    echo "Please provide source branch"
+    exit 1
+fi
+if [[ -z $TO_BRANCH ]]; then
+    echo "Please provide destination branch"
+    exit 1
+fi
+
+#end check
+
 mkdir -p $TAG_PATH
 
 if [[ -n $DEPLOY_BUILD_TAG ]]; then
