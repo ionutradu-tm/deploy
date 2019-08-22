@@ -306,10 +306,8 @@ if [[ -z $INCREASE_BUILD_NUMBER ]]; then
                 echo "Latest build: $LATEST_BUILD_NUMBER"
                 NEW_BUILD_NUMBER=$((LATEST_BUILD_NUMBER + 1))
                 echo "NEW build: $NEW_BUILD_NUMBER"
-                NEW_TAG=$SOURCE_BRANCH"+"$NEW_BUILD_NUMBER
-                OLD_TAG=$SOURCE_BRANCH"+"$LATEST_BUILD_NUMBER
-                export $OLD_TAG
-                export $NEW_TAG
+                export NEW_TAG=$SOURCE_BRANCH"+"$NEW_BUILD_NUMBER
+                export OLD_TAG=$SOURCE_BRANCH"+"$LATEST_BUILD_NUMBER
                 #echo $OLD_TAG > $REPO_PATH_TAG/old_tag.txt
                 #echo $NEW_TAG > $REPO_PATH_TAG/new_tag.txt
         fi
