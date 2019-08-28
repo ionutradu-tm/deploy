@@ -117,9 +117,11 @@ function get_build_number_commit_prefix_tag(){
                 COMMIT_WITH_LATEST_TAG=""
         else
                 LATEST_TAG=$TAG_PREFIX"+"$LATEST_BUILD_NUMBER
+                echo "LATEST_TAG: $LATEST_TAG"
                 COMMIT_WITH_LATEST_TAG=$(git rev-list -1 $LATEST_TAG)
                 echo "commit with latest tag: $COMMIT_WITH_LATEST_TAG"
                 LAST_COMMIT_SHA=$(git rev-parse $FROM_BRANCH)
+                echo "LAST_COMMIT_SHA: $LAST_COMMIT_SHA"
                 if [[ "$LAST_COMMIT_SHA" == "$COMMIT_WITH_LATEST_TAG" ]];then
                         echo "No need to increase the build number"
                         INCREASE_BUILD_NUMBER="FALSE"
@@ -288,7 +290,7 @@ clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
 if [ $? -eq 0 ]; then
         #destination branch exists
         echo "compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
-        compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
+        #compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
         echo "switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH"
         switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH
         echo "delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH"
