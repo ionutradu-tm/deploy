@@ -125,6 +125,7 @@ function get_build_number_commit_prefix_tag(){
                 if [[ "$LAST_COMMIT_SHA" == "$COMMIT_WITH_LATEST_TAG" ]];then
                         echo "No need to increase the build number"
                         INCREASE_BUILD_NUMBER="FALSE"
+                        export VERSION_TEST=$LATEST_TAG
                 fi
         fi
 
@@ -310,6 +311,7 @@ if [[ -z $INCREASE_BUILD_NUMBER ]]; then
                 echo "NEW build: $NEW_BUILD_NUMBER"
                 export NEW_TAG=$SOURCE_BRANCH"+"$NEW_BUILD_NUMBER
                 export OLD_TAG=$SOURCE_BRANCH"+"$LATEST_BUILD_NUMBER
+                export VERSION_TEST=$NEW_TAG
                 #echo $OLD_TAG > $REPO_PATH_TAG/old_tag.txt
                 #echo $NEW_TAG > $REPO_PATH_TAG/new_tag.txt
         fi
@@ -322,6 +324,7 @@ if [[ -n $FORCE_BUILD_NUMBER ]]; then
         echo "tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_TAG"
         tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $FORCE_BUILD_TAG
         export NEW_TAG=$FORCE_BUILD_TAG
+        export VERSION_TEST=$NEW_TAG
         #echo  $FORCE_BUILD_NUMBER > $REPO_PATH_TAG/new_tag.txt
 else
         if [[ -n $NEW_TAG ]]; then
