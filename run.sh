@@ -297,6 +297,9 @@ if [ $? -eq 0 ]; then
         echo "delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH"
         delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
 fi
+
+export ENVIRONMENT=$TO_BRANCH
+
 echo "clone_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
 clone_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
 echo "$SOURCE_BRANCH cloned into $TO_BRANCH"
