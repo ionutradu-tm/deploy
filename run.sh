@@ -12,6 +12,26 @@ BUILD_TAG=$WERCKER_DEPLOY_BUILD_TAG
 FORCE_CLONE=$WERCKER_DEPLOY_FORCE_CLONE
 TAG_PROD=$WERCKER_DEPLOY_TAG_PROD
 TAG_PATH=$WERCKER_SOURCE_DIR"/tag"
+#VARS
+
+function send_message_to_skype(){
+
+  local BOT_MESSAGE="$1"
+  local BOT_GROUP_ID="$2"
+  local BOT_URL="$3"
+
+
+  if [[ -n ${BOT_GROUP_ID} ]] && [[ -n ${BOT_URL} ]];then
+    echo -e "{\n}" > bot_body.json
+    cat bot_body.json |
+    jq 'setpath(["groupId"]; "${BOT_GROUP_ID}")'|
+    jq 'setpath(["message"]; "${BOT_MESSAGE}")' > bot_body_send.json
+    RESPONSE_CODE=$(curl --write-out %{http_code} --silent --output /dev/null -X POST --data @bot_body_send.json ${BOT_URL} -H "Content-Type: application/json")
+    echo ${RESPONSE_CODE}
+  fi
+}
+
+
 
 # clone or pull a repository
 # ARG1: repo name
@@ -263,6 +283,8 @@ if [[ -z $TO_BRANCH ]]; then
 fi
 
 #end check
+
+send_message_to_skype "Preparing deployment of ${SOURCE_BRANCH} on ${TO_BRANCH}" "${BOT_GROUP_ID}" "${BOT_URL}"
 
 mkdir -p $TAG_PATH
 
