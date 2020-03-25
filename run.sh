@@ -357,3 +357,4 @@ else
                 tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $NEW_TAG $LAST_COMMIT_SHA
         fi
 fi
+send_message_to_skype "Preparing deployment of ${SOURCE_BRANCH} on ${TO_BRANCH} has been finished" "${BOT_GROUP_ID}" "${BOT_URL}"
