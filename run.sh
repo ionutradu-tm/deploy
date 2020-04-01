@@ -179,7 +179,7 @@ function clone_branch(){
         git checkout -b $NEW_BRANCH $FROM_BRANCH
         if [ $? -eq 0 ]; then
                 echo "Succesfully created branch $NEW_BRANCH"
-                git commit --allow-empty -m "Deploy $FROM_BRANCH to $NEW_BRANCH"
+                git commit --allow-empty -m "Deployment of $FROM_BRANCH to $NEW_BRANCH"
                 git push -f origin $NEW_BRANCH
                 if [ $? -eq 0 ]; then
                         echo "Succesfully pushed branch $NEW_BRANCH"
