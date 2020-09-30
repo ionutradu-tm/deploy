@@ -10,6 +10,7 @@
 #BUILD_TAG deploy from a specific tag
 #FORCE_CLONE ingnores cache and reclone the repository
 #TAG_PROD production tag (not implemenet yet)
+#TOKEN github token
 
 TAG_PATH=$WERCKER_SOURCE_DIR"my_tmp/tag"
 REPO_PATH="my_tmp/"$REPO_NAME
@@ -40,8 +41,8 @@ function clone_pull_repo (){
                 echo "Clone repository: $REPO"
                 mkdir -p $REPO_PATH
                 cd $REPO_PATH
-                echo "git clone git@github.com:$USER/$REPO.git . >/dev/null"
-                git clone git@github.com:$USER/$REPO.git . >/dev/null
+                echo "git clone token@github.com/$USER/$REPO.git . >/dev/null"
+                git clone ${TOKEN}@github.com/$USER/$REPO.git . >/dev/null
                 if [ $? -eq 0 ]; then
                         echo "Repository $REPO created"
                 else
@@ -267,6 +268,11 @@ if [[ -z $TO_BRANCH ]]; then
     exit 1
 fi
 
+if [[ -z $TOKEN ]]; then
+    echo "Please provide GitHub token"
+    exit 1
+fi
+
 #end check
 
 
@@ -341,3 +347,7 @@ else
                 tag_commit_sha $REPO_NAME $REPO_PATH $REPO_USER $NEW_TAG $LAST_COMMIT_SHA
         fi
 fi
+
+#export envs between GitHub Actions steps
+echo "::set-env name=NEW_TAG::$NEW_TAG"
+echo "::set-env name=OLD_TAG::$OLD_TAG"
