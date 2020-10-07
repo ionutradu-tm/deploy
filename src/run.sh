@@ -42,7 +42,7 @@ function clone_pull_repo (){
                 mkdir -p $REPO_PATH
                 cd $REPO_PATH
                 echo "git clone token@github.com/$USER/$REPO.git . >/dev/null"
-                git clone ${TOKEN}@github.com/$USER/$REPO.git . >/dev/null
+                git clone https://${TOKEN}@github.com/$USER/$REPO.git
                 if [ $? -eq 0 ]; then
                         echo "Repository $REPO created"
                 else
