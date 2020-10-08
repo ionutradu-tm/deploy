@@ -14,6 +14,7 @@
 
 TAG_PATH=$WERCKER_SOURCE_DIR"my_tmp/tag"
 REPO_PATH="my_tmp/"${REPO_NAME}
+GIT_URL="https://${TOKEN}@github.com/$REPO_USER/${REPO_MAME}.git"
 
 ###############
 #output vars
@@ -25,8 +26,6 @@ REPO_PATH="my_tmp/"${REPO_NAME}
 # ENVIROMENT: dest branch
 
 #VARS
-
-
 
 
 # clone or pull a repository
@@ -52,7 +51,7 @@ function clone_pull_repo (){
                 mkdir -p $REPO_PATH
                 cd $REPO_PATH
                 echo "git clone https://token@github.com/$USER/$REPO.git "
-                git clone https://${TOKEN}@github.com/$USER/$REPO.git
+                git clone ${GIT_URL}
                 if [ $? -eq 0 ]; then
                         echo "Repository $REPO created"
                 else
@@ -191,11 +190,12 @@ function clone_branch(){
         if [ $? -eq 0 ]; then
                 echo "Succesfully created branch $NEW_BRANCH"
                 git commit --allow-empty -m "Deployment of $FROM_BRANCH to $NEW_BRANCH"
-                git push -f origin $NEW_BRANCH
+                result="$(git push -q -f ${GIT_URL} ${NEW_BRANCH}:${NEW_BRANCH} 2>&1)"
                 if [ $? -eq 0 ]; then
                         echo "Succesfully pushed branch $NEW_BRANCH"
                 else
-                        echo "Error while pushing bracnh $NEW_BRANCH"
+                        echo "Error while pushing branch $NEW_BRANCH"
+                        echo ${result}
                         exit 2
                 fi
         else
