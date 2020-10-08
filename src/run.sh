@@ -248,6 +248,7 @@ function delete_branch(){
         local BRANCH=$3
 
         git branch -D $BRANCH
+        echo "Branch ${BRANCH} has been removed"
 
 }
 
