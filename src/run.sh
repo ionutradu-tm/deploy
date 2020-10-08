@@ -92,7 +92,7 @@ function switch_branch(){
         local BRANCH=$3
 
         #check if REPO_PATH exists
-        if [ -d "$REPO_PATH" ]; then
+        if [ -d ".git" ]; then
                 echo "Switch to branch $BRANCH "
                 #git pull >/dev/null
                 git checkout $BRANCH >/dev/null
@@ -218,7 +218,7 @@ function tag_commit_sha(){
         local NEW_TAG=$4
         local COMMIT_SHA=$5
 
-        if [ -d "$REPO_PATH" ]; then
+        if [ -d ".git" ]; then
                 if [[ -z $COMMIT_SHA ]]; then
                         COMMIT_SHA=$(git log -n 1 |  head -n 1 |  cut -d\  -f2)
                 fi
@@ -249,6 +249,11 @@ function delete_branch(){
         git branch -D $BRANCH
 
 }
+
+function check_branch () {
+  git ls-remote -q --exit-code . origin/$1 > /dev/null
+}
+
 #end functions
 #############################################################3
 
@@ -307,17 +312,22 @@ else
 fi
 
 # check if the destination branch exists"
-echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
-clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
-if [ $? -eq 0 ]; then
-        #destination branch exists
-        echo "compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
-        #compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
-        echo "switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH"
-        switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH
-        echo "delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH"
-        delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
-fi
+
+
+if check_branch ${REPO_BRANCH}; then
+   delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
+
+#echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
+#clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
+#if [ $? -eq 0 ]; then
+#        #destination branch exists
+#        echo "compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH"
+#        #compare_branches $REPO_NAME $REPO_PATH $SOURCE_BRANCH $TO_BRANCH
+#        echo "switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH"
+#        switch_branch $REPO_NAME $REPO_PATH $SOURCE_BRANCH
+#        echo "delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH"
+#        delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
+#fi
 
 export ENVIRONMENT=$TO_BRANCH
 
