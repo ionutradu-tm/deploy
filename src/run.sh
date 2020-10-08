@@ -14,7 +14,8 @@
 
 TAG_PATH=$WERCKER_SOURCE_DIR"my_tmp/tag"
 REPO_PATH="my_tmp/"${REPO_NAME}
-GIT_URL="https://${TOKEN}@github.com/$REPO_USER/${REPO_MAME}.git"
+GIT_URL="https://${TOKEN}@github.com/${REPO_USER}/${REPO_MAME}.git"
+echo ${GIT_URL}
 
 ###############
 #output vars
