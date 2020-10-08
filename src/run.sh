@@ -13,7 +13,17 @@
 #TOKEN github token
 
 TAG_PATH=$WERCKER_SOURCE_DIR"my_tmp/tag"
-REPO_PATH="my_tmp/"$REPO_NAME
+REPO_PATH="my_tmp/"
+
+###############
+output vars
+##############
+
+# OLD_TAG: previous build number
+# NEW_TAG: current build number
+# VERSION_TAG: NEW_TAG or latest build
+# ENVIROMENT: dest branch
+
 #VARS
 
 
@@ -41,7 +51,7 @@ function clone_pull_repo (){
                 echo "Clone repository: $REPO"
                 mkdir -p $REPO_PATH
                 cd $REPO_PATH
-                echo "git clone token@github.com/$USER/$REPO.git . >/dev/null"
+                echo "git clone https://token@github.com/$USER/$REPO.git "
                 git clone https://${TOKEN}@github.com/$USER/$REPO.git
                 if [ $? -eq 0 ]; then
                         echo "Repository $REPO created"
@@ -52,7 +62,7 @@ function clone_pull_repo (){
                 fi
         fi
         echo "Pull repository: $REPO"
-        cd $REPO_PATH
+        cd $REPO_NAME
         git checkout $BRANCH
         if [ $? -eq 0 ]; then
                 echo "Succesfully switched to branch $BRANCH"
@@ -84,7 +94,6 @@ function switch_branch(){
         #check if REPO_PATH exists
         if [ -d "$REPO_PATH" ]; then
                 echo "Switch to branch $BRANCH "
-                cd $REPO_PATH
                 #git pull >/dev/null
                 git checkout $BRANCH >/dev/null
                 if [ $? -eq 0 ]; then
@@ -349,5 +358,5 @@ else
 fi
 
 #export envs between GitHub Actions steps
-echo "::set-env name=NEW_TAG::$NEW_TAG"
-echo "::set-env name=OLD_TAG::$OLD_TAG"
+echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
+echo "OLD_TAG=${OLD_TAG}" >> $GITHUB_ENV
