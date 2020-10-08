@@ -316,7 +316,7 @@ fi
 
 if check_branch ${REPO_BRANCH}; then
    delete_branch $REPO_NAME $REPO_PATH $TO_BRANCH
-
+fi
 #echo "clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH"
 #clone_pull_repo $REPO_NAME $REPO_PATH $REPO_USER $TO_BRANCH
 #if [ $? -eq 0 ]; then
