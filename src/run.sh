@@ -13,10 +13,10 @@
 #TOKEN github token
 
 TAG_PATH=$WERCKER_SOURCE_DIR"my_tmp/tag"
-REPO_PATH="my_tmp/"
+REPO_PATH="my_tmp/"${REPO_NAME}
 
 ###############
-output vars
+#output vars
 ##############
 
 # OLD_TAG: previous build number
@@ -62,7 +62,7 @@ function clone_pull_repo (){
                 fi
         fi
         echo "Pull repository: $REPO"
-        cd $REPO_NAME
+        cd $REPO
         git checkout $BRANCH
         if [ $? -eq 0 ]; then
                 echo "Succesfully switched to branch $BRANCH"
